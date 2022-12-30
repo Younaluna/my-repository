@@ -46,7 +46,11 @@ Resources:
             wget https://raw.githubusercontent.com/Younaluna/my-repository/main/Project-101-kittens-carousel-static-website-ec2/static-web/cat3.png
             systemctl enable httpd 
             systemctl start httpd
-            
+        
+Outputs:
+  URL:
+    Description: URL of the website
+    Value: !Join ['', ['http://', !GetAtt [EC2Instance, PublicDnsName]]]              
             
           
             
