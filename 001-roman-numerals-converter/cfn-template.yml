@@ -1,0 +1,53 @@
+---
+Resources:
+  YounaLuna:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow access on ports 80 and 22
+      GroupName: YounaLuna
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: YounaLuna
+      VpcId: vpc-0be1f12e673856f1c
+
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      SubnetId: subnet-037af1ea1237c774d
+      SecurityGroupIds:
+        - !Ref YounaLuna
+      KeyName: firstkey
+      ImageId: ami-0b5eea76982371e91
+      Tags:
+        - Key: Name
+          Value: Web Server of YounaLuna
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash -x
+            sudo su
+            yum update -y
+            yum install -y httpd
+            cd /var/www/html
+            wget https://raw.githubusercontent.com/Younaluna/my-repository/main/Project-101-kittens-carousel-static-website-ec2/static-web/index.html
+            wget https://raw.githubusercontent.com/Younaluna/my-repository/main/Project-101-kittens-carousel-static-website-ec2/static-web/cat0.jpg
+            wget https://raw.githubusercontent.com/Younaluna/my-repository/main/Project-101-kittens-carousel-static-website-ec2/static-web/cat1.jpg
+            wget https://raw.githubusercontent.com/Younaluna/my-repository/main/Project-101-kittens-carousel-static-website-ec2/static-web/cat2.jpg
+            wget https://raw.githubusercontent.com/Younaluna/my-repository/main/Project-101-kittens-carousel-static-website-ec2/static-web/cat3.png
+            systemctl enable httpd 
+            systemctl start httpd
+        
+Outputs:
+  URL:
+    Description: URL of the website
+    Value: !Join ['', ['http://', !GetAtt [EC2Instance, PublicDnsName]]]         
