@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: |
-  Build a static website with a ClouFront distribution
+  Build a static website with a CloudFront distribution
 Parameters:
 
   pKittensDomainName:
